@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, hostname, ... }:
 
 {
   home.packages = with pkgs; [
@@ -9,5 +9,6 @@
     neovim
     tmux
     uv
+    fish
   ];
 }

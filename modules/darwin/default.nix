@@ -6,6 +6,11 @@
       (builtins.filter (f: f != "default.nix")
         (builtins.attrNames (builtins.readDir ./.)));
 
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+
   networking.hostName = hostname;
 
   users.users.${username} = {
