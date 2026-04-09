@@ -1,6 +1,11 @@
 { hostname, homeDirectory, username, ... }:
 
 {
+  imports =
+    builtins.map (f: ./. + "/${f}")
+      (builtins.filter (f: f != "default.nix")
+        (builtins.attrNames (builtins.readDir ./.)));
+
   networking.hostName = hostname;
 
   users.users.${username} = {
