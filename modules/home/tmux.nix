@@ -1,0 +1,36 @@
+{ ... }:
+
+{
+  xdg.configFile."tmux/tmux.conf".text = ''
+    # 既存のプレフィックス解除（デフォルトは Ctrl+b）
+    unbind C-b
+    # Ctrl+s をプレフィックスに設定
+    set-option -g prefix C-s
+    bind C-s send-prefix
+
+    # ウィンドウ操作
+    bind -r C-k new-window -c "#{pane_current_path}"
+    bind -r C-h previous-window
+    bind -r C-l next-window
+    bind -r C-j kill-window
+
+    # ペインリサイズ
+    bind -r H resize-pane -L 5
+    bind -r J resize-pane -D 5
+    bind -r K resize-pane -U 5
+    bind -r L resize-pane -R 5
+
+    # ペイン移動・削除・作成
+    bind -r C-q kill-pane
+    bind -r C-o select-pane -t :.+
+    bind -r C-y select-pane -t :.-
+    bind -r C-u split-window -h
+    bind -r C-i split-window -v
+
+    # マウススクロールを可能に
+    set -g mouse on
+
+    # 画面をクリア
+    bind C-c send-keys 'clear' C-m
+  '';
+}
