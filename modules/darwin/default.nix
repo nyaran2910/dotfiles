@@ -1,4 +1,4 @@
-{ hostname, homeDirectory, username, ... }:
+{ hostname, homeDirectory, username, pkgs, stablePkgs, ... }:
 
 {
   imports =
@@ -11,13 +11,19 @@
     "flakes"
   ];
 
+  environment.shells = [ stablePkgs.fish pkgs.zsh ];
+
   networking.hostName = hostname;
 
   users.users.${username} = {
     home = homeDirectory;
+    shell = "${stablePkgs.fish}/bin/fish";
   };
 
-  programs.zsh.enable = true;
+  programs.fish = {
+    enable = true;
+    package = stablePkgs.fish;
+  };
 
   system.primaryUser = username;
   system.stateVersion = 6;

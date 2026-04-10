@@ -8,7 +8,5 @@
     opencode
     neovim
     tmux
-    uv
-    fish
   ];
 }
