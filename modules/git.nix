@@ -8,7 +8,7 @@
     ];
     settings.user = {
       name = "nyaran";
-      email = "private@example.invalid";
+      email = import ../secrets/git-email.nix;
     };
   };
 }
