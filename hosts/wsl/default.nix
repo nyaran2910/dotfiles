@@ -10,10 +10,6 @@ in
     SHELL = fishPath;
   };
 
-  programs.fish.functions.rebuild = ''
-    home-manager switch --flake ~/.dotfiles#$argv[1]
-  '';
-
   home.activation.setDefaultFishShell = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     if ! grep -qx '${fishPath}' /etc/shells 2>/dev/null; then
       echo 'Adding fish to /etc/shells'
