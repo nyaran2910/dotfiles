@@ -3,8 +3,8 @@
 
   inputs = {
     nixpkgs-2505.url = "github:NixOS/nixpkgs/nixos-25.05";
-    nixpkgs-2511.url = "github:NixOS/nixpkgs/nixpkgs-25.11-darwin";
-    nixpkgs-latest.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs-2511.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs-latest.url = "github:NixOS/nixpkgs/nixos-unstable";
     nix-darwin.url = "github:LnL7/nix-darwin/nix-darwin-25.11";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs-2511";
     home-manager.url = "github:nix-community/home-manager/release-25.11";
@@ -17,39 +17,66 @@
     , ...
     }:
     let
-      system = "aarch64-darwin";
       username = "nyaran";
-      homeDirectory = "/Users/${username}";
-      hostname = "orion";
-      mkPkgs = nixpkgs: import nixpkgs { inherit system; };
-      pkgs2505 = mkPkgs inputs.nixpkgs-2505;
-      pkgs2511 = mkPkgs inputs.nixpkgs-2511;
-      pkgsLatest = mkPkgs inputs.nixpkgs-latest;
-      specialArgs = {
-        inherit inputs username homeDirectory hostname pkgs2505 pkgs2511 pkgsLatest;
+      mkPkgs = system: nixpkgs: import nixpkgs { inherit system; };
+      mkSpecialArgs = { system, homeDirectory, hostname }:
+        let
+          pkgs2505 = mkPkgs system inputs.nixpkgs-2505;
+          pkgs2511 = mkPkgs system inputs.nixpkgs-2511;
+          pkgsLatest = mkPkgs system inputs.nixpkgs-latest;
+        in
+        {
+          inherit inputs system username homeDirectory hostname pkgs2505 pkgs2511 pkgsLatest;
+        };
+
+      darwinSystem = "aarch64-darwin";
+      darwinHostname = "orion";
+      darwinSpecialArgs = mkSpecialArgs {
+        system = darwinSystem;
+        homeDirectory = "/Users/${username}";
+        hostname = darwinHostname;
+      };
+
+      wslSystem = "x86_64-linux";
+      wslHostname = "wsl";
+      wslSpecialArgs = mkSpecialArgs {
+        system = wslSystem;
+        homeDirectory = "/home/${username}";
+        hostname = wslHostname;
       };
     in
     {
-      darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem {
-        inherit system specialArgs;
+      darwinConfigurations.${darwinHostname} = nix-darwin.lib.darwinSystem {
+        system = darwinSystem;
+        specialArgs = darwinSpecialArgs;
         modules = [
-          ./modules/darwin/default.nix
+          ./hosts/orion/default.nix
           home-manager.darwinModules.home-manager
           {
-            nixpkgs.pkgs = pkgs2511;
+            nixpkgs.pkgs = darwinSpecialArgs.pkgs2511;
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "hm-backup";
-            home-manager.extraSpecialArgs = specialArgs;
+            home-manager.extraSpecialArgs = darwinSpecialArgs;
             home-manager.users.${username} = {
               imports = [
-                ./modules/home/default.nix
+                ./modules/default.nix
               ];
             };
           }
         ];
       };
 
-      formatter.${system} = pkgsLatest.nixfmt-rfc-style;
+      homeConfigurations.${wslHostname} = home-manager.lib.homeManagerConfiguration {
+        pkgs = wslSpecialArgs.pkgs2511;
+        extraSpecialArgs = wslSpecialArgs;
+        modules = [
+          ./modules/default.nix
+          ./hosts/wsl/default.nix
+        ];
+      };
+
+      formatter.${darwinSystem} = darwinSpecialArgs.pkgsLatest.nixfmt-rfc-style;
+      formatter.${wslSystem} = wslSpecialArgs.pkgsLatest.nixfmt-rfc-style;
     };
 }

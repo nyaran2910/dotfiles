@@ -41,14 +41,10 @@
 
       clone-report = "git clone --depth 1 https://github.com/nyaran2910/report report; and rm -rf report/.git";
 
-      update="nix flake update path:~/.dotfiles";
+      update = "nix flake update path:~/.dotfiles";
     };
 
     functions = {
-      rebuild = ''
-        sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake ~/.dotfiles#$argv[1]
-      '';
-
       cdd = "cd $HOME/Downloads/$argv[1]";
       cdw = "cd $HOME/Workspace/$argv[1]";
 

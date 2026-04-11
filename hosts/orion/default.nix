@@ -1,11 +1,6 @@
 { hostname, homeDirectory, username, pkgs, pkgs2505, ... }:
 
 {
-  imports =
-    builtins.map (f: ./. + "/${f}")
-      (builtins.filter (f: f != "default.nix")
-        (builtins.attrNames (builtins.readDir ./.)));
-
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
@@ -33,6 +28,10 @@
     home.shellAliases = {
       cdi = "cd \"$HOME/Library/Mobile Documents/com~apple~CloudDocs\"";
     };
+
+    programs.fish.functions.rebuild = ''
+      sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake ~/.dotfiles#$argv[1]
+    '';
 
     xdg.configFile."ghostty".source = ../../config/ghostty;
   };
