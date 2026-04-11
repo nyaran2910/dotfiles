@@ -1,4 +1,21 @@
-# 反映コマンド
+# nix-setting
+
+## commands
+
+### applying hosts
+
 ```
-sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake ~/.dotfiles/#MacBook-Pro-M4
+sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake ~/.dotfiles/#<host name>
 ```
+
+## host name and devices
+
+### orion
+
+- Macbook Pro M4
+
+## problems
+
+### about fish
+
+- it does not work for package-25.11, so that it use 25.05

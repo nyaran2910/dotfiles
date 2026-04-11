@@ -1,4 +1,4 @@
-{ hostname, homeDirectory, username, pkgs, stablePkgs, ... }:
+{ hostname, homeDirectory, username, pkgs, pkgs2505, ... }:
 
 {
   imports =
@@ -11,18 +11,30 @@
     "flakes"
   ];
 
-  environment.shells = [ stablePkgs.fish pkgs.zsh ];
+  environment.shells = [ pkgs2505.fish pkgs.zsh ];
 
   networking.hostName = hostname;
 
   users.users.${username} = {
     home = homeDirectory;
-    shell = "${stablePkgs.fish}/bin/fish";
+    shell = "${pkgs2505.fish}/bin/fish";
   };
 
   programs.fish = {
     enable = true;
-    package = stablePkgs.fish;
+    package = pkgs2505.fish;
+  };
+
+  home-manager.users.${username} = {
+    home.sessionPath = [
+      "/opt/homebrew/bin"
+    ];
+
+    home.shellAliases = {
+      cdi = "cd \"$HOME/Library/Mobile Documents/com~apple~CloudDocs\"";
+    };
+
+    xdg.configFile."ghostty".source = ../../config/ghostty;
   };
 
   system.primaryUser = username;

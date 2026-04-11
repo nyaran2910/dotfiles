@@ -1,8 +1,9 @@
-{ pkgs, stablePkgs, ... }:
+{ pkgs, pkgs2505, ... }:
 {
   programs.fish = {
     enable = true;
-    package = stablePkgs.fish;
+    package = pkgs2505.fish;
+
     plugins = [
       {
         name = "pure";
@@ -29,23 +30,29 @@
     ];
 
     shellAliases = {
-      clone-report = "git clone --depth 1 https://github.com/nyaran2910/report report; and rm -rf report/.git";
-
       tsf = "tmux source-file ~/.config/tmux/tmux.conf";
       tat = "tmux attach -t";
       tns = "tmux new -s";
-      tl  = "tmux ls";
+      tl = "tmux ls";
       tkt = "tmux kill-session -t";
       tks = "tmux kill-server";
 
-      oc   = "opencode";
-      lgit = "lazygit";
+      oc = "opencode";
 
-      cdd = "cd $HOME/Downloads";
-      cdw = "cd $HOME/Workspace";
+      clone-report = "git clone --depth 1 https://github.com/nyaran2910/report report; and rm -rf report/.git";
+
+      update="nix flake update path:~/.dotfiles";
+    };
+
+    functions = {
+      rebuild = ''
+        sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake ~/.dotfiles#$argv[1]
+      '';
+
+      cdd = "cd $HOME/Downloads/$argv[1]";
+      cdw = "cd $HOME/Workspace/$argv[1]";
+
+      clone = "git clone --depth 1 $argv[1] $argv[2]; and rm -rf report/.git";
     };
   };
-
-  home.sessionPath = [
-  ];
 }

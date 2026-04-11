@@ -3,7 +3,7 @@
 {
   imports =
     builtins.map (f: ./. + "/${f}")
-      (builtins.filter (f: !(builtins.elem f [ "default.nix" "darwin.nix" ]))
+      (builtins.filter (f: f != "default.nix")
         (builtins.attrNames (builtins.readDir ./.)));
 
   home.username = username;

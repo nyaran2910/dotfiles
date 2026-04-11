@@ -2,29 +2,31 @@
   description = "nyaran dotfiles managed with nix-darwin and home-manager";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-25.11-darwin";
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixpkgs-25.05-darwin";
+    nixpkgs-2505.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs-2511.url = "github:NixOS/nixpkgs/nixpkgs-25.11-darwin";
+    nixpkgs-latest.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:LnL7/nix-darwin/nix-darwin-25.11";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs-2511";
     home-manager.url = "github:nix-community/home-manager/release-25.11";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs-2511";
   };
 
   outputs =
-    inputs@{
-      nixpkgs,
-      nix-darwin,
-      home-manager,
-      ...
+    inputs@{ nix-darwin
+    , home-manager
+    , ...
     }:
     let
       system = "aarch64-darwin";
       username = "nyaran";
       homeDirectory = "/Users/${username}";
-      hostname = "MacBook-Pro-M4";
+      hostname = "orion";
+      mkPkgs = nixpkgs: import nixpkgs { inherit system; };
+      pkgs2505 = mkPkgs inputs.nixpkgs-2505;
+      pkgs2511 = mkPkgs inputs.nixpkgs-2511;
+      pkgsLatest = mkPkgs inputs.nixpkgs-latest;
       specialArgs = {
-        inherit inputs username homeDirectory hostname;
-        stablePkgs = import inputs.nixpkgs-stable { inherit system; };
+        inherit inputs username homeDirectory hostname pkgs2505 pkgs2511 pkgsLatest;
       };
     in
     {
@@ -34,6 +36,7 @@
           ./modules/darwin/default.nix
           home-manager.darwinModules.home-manager
           {
+            nixpkgs.pkgs = pkgs2511;
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "hm-backup";
@@ -41,13 +44,12 @@
             home-manager.users.${username} = {
               imports = [
                 ./modules/home/default.nix
-                ./modules/home/darwin.nix
               ];
             };
           }
         ];
       };
 
-      formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt-rfc-style;
+      formatter.${system} = pkgsLatest.nixfmt-rfc-style;
     };
 }
