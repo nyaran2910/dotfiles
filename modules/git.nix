@@ -8,7 +8,7 @@
     ];
     settings.user = {
       name = "nyaran";
-      email = import ../secrets/git-email.nix;
+      email = import /Users/nyaran/.dotfiles/secrets/git-email.nix;
     };
   };
 }
