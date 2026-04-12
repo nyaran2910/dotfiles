@@ -31,10 +31,10 @@
       "/opt/homebrew/bin"
     ];
 
-    home.shellAliases = {
+    programs.fish.shellAliases = {
       cdi = "cd \"$HOME/Library/Mobile Documents/com~apple~CloudDocs\"";
-      rollback="darwin-rebuild --rollback";
-      generation="/nix/var/nix/profiles/system --list-generations>";
+      rollback = "sudo darwin-rebuild --rollback";
+      generation = "sudo darwin-rebuild --list-generations";
     };
     
     programs.fish.functions = {

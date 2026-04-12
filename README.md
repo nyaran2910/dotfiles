@@ -5,7 +5,7 @@
 ### applying hosts
 
 ```
-sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake ~/.dotfiles/#<host name>
+sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake ~/.dotfiles/#<host name> --impure
 ```
 
 ## host name and devices
