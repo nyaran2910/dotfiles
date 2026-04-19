@@ -1,12 +1,29 @@
--- ~/.config/nvim/lua/plugins/conform.lua
 return {
   "stevearc/conform.nvim",
   opts = {
     formatters_by_ft = {
-      typescript = { "prettier" },
-      typescriptreact = { "prettier" },
+      -- JS/TS
       javascript = { "prettier" },
       javascriptreact = { "prettier" },
+      typescript = { "prettier" },
+      typescriptreact = { "prettier" },
+
+      -- web
+      html = { "prettier" },
+      css = { "prettier" },
+      scss = { "prettier" },
+      less = { "prettier" },
+
+      -- config/data
+      json = { "prettier" },
+      jsonc = { "prettier" },
+      yaml = { "prettier" },
+      markdown = { "prettier" },
+
+      -- others
+      graphql = { "prettier" },
+      vue = { "prettier" },
+      svelte = { "prettier" },
     },
   },
 }

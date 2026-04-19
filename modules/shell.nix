@@ -1,5 +1,7 @@
 { pkgs, pkgs2505, ... }:
 {
+  home.file.".hushlogin".text = "";
+
   programs.fish = {
     enable = true;
     package = pkgs2505.fish;
@@ -38,17 +40,19 @@
       tks = "tmux kill-server";
 
       oc = "opencode";
+      npm = "pnpm";
+      fish = "exec fish";
 
       clone-report = "git clone --depth 1 https://github.com/nyaran2910/report report; and rm -rf report/.git";
 
-      update = "nix flake update path:~/.dotfiles";
+      upgrade = "nix flake update --flake path:$HOME/.dotfiles";
     };
 
     functions = {
       cdd = "cd $HOME/Downloads/$argv[1]";
       cdw = "cd $HOME/Workspace/$argv[1]";
 
-      clone = "git clone --depth 1 $argv[1] $argv[2]; and rm -rf report/.git";
+      clone = "git clone --depth 1 $argv[1] $argv[2]; and rm -rf $argv[1]/.git";
     };
   };
 }

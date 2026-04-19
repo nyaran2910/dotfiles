@@ -32,15 +32,10 @@
     ];
 
     programs.fish.shellAliases = {
-      cdi = "cd \"$HOME/Library/Mobile Documents/com~apple~CloudDocs\"";
+      cdi = "cd \"$HOME/Library/Mobile Documents/com~apple~CloudDocs/Personal/\"";
       rollback = "sudo darwin-rebuild --rollback";
       generation = "sudo darwin-rebuild --list-generations";
-    };
-    
-    programs.fish.functions = {
-      rebuild = ''
-        sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake ~/.dotfiles#$argv[1] --impure
-      '';
+      rebuild = "sudo nix run nix-darwin --extra-experimental-features \"nix-command flakes\" -- switch --flake ~/.dotfiles#orion --impure";
     };
 
     xdg.configFile."ghostty".source = ../../config/ghostty;

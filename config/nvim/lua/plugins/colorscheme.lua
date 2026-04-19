@@ -2,9 +2,13 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "kanagawa", -- お好みのテーマ名
+      colorscheme = "onedark",
     },
   },
-  -- { "r-happy/tawny.nvim", opts={} },
-  { "rebelot/kanagawa.nvim" }, -- テーマプラグインを追加
+  {
+    "navarasu/onedark.nvim",
+    opts = {
+      style = "light",
+    },
+  },
 }

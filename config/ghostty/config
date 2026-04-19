@@ -2,3 +2,4 @@
 font-family = "JetBrains Mono"
 font-family-italic = "JetBrains Mono Italic"
 font-family = "Hiragino Sans Mono"
+theme = dark:Catppuccin Mocha,light:Catppuccin Latte
