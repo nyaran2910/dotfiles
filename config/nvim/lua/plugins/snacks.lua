@@ -5,6 +5,14 @@ return {
     lazy = false,
     opts = {
       picker = { enabled = true },
+      terminal = {
+        win = {
+          keys = {
+            nav_h = false,
+            term_normal = false,
+          },
+        },
+      },
     },
     keys = {
       {

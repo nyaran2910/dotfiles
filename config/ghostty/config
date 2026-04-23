@@ -1,5 +1,3 @@
-# fonts
-font-family = "JetBrains Mono"
+font-family = "JetBrains Mono","Hiragino Sans Mono"
 font-family-italic = "JetBrains Mono Italic"
-font-family = "Hiragino Sans Mono"
-theme = dark:Catppuccin Mocha,light:Catppuccin Latte
+theme = dark:"Kanagawa Wave",light:Catppuccin Latte
