@@ -10,4 +10,3 @@ vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHo
 vim.opt.spell = false -- disables spell check
 vim.opt.clipboard = "unnamedplus" -- yy to paste clipboard
 vim.g.autoformat = false -- disable format on save
-vim.o.laststatus = 0 -- disable status bar

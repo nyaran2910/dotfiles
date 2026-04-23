@@ -24,4 +24,17 @@ return {
       },
     },
   },
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        rnix = {
+          enabled = false,
+        },
+        nil_ls = {
+          mason = false,
+        },
+      },
+    },
+  },
 }
