@@ -1,4 +1,13 @@
+# font
 font-family = "JetBrains Mono","Hiragino Sans Mono"
 font-family-italic = "JetBrains Mono Italic"
+
+# theme
 theme = dark:"Kanagawa Wave",light:Catppuccin Latte
-copy_on_select = true
+
+# shell
+command = /Users/nyaran/.local/bin/fish-login
+
+# global keybind
+keybind = global:shift+cmd+space=toggle_quick_terminal
+keybind = global:shift+cmd+alt+ctrl+i=new_window
