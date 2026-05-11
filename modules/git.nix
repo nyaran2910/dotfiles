@@ -6,9 +6,11 @@
     ignores = [
       ".DS_Store"
     ];
-    settings.user = {
-      name = "nyaran";
-      email = import /Users/nyaran/.dotfiles/secrets/git-email.nix;
+    settings = {
+      user.name = "nyaran";
     };
+    includes = [
+      { path = "~/.dotfiles/secrets/gitconfig"; }
+    ];
   };
 }

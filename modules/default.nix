@@ -1,11 +1,12 @@
 { username, homeDirectory, ... }:
 
 {
-  imports = builtins.map (f: ./. + "/${f}") (
-    builtins.filter (f: f != "default.nix" && builtins.match ".*\\.nix" f != null) (
-      builtins.attrNames (builtins.readDir ./.)
-    )
-  );
+  imports = [
+    ./git.nix
+    ./packages.nix
+    ./shell.nix
+    ./source.nix
+  ];
 
   home.username = username;
   home.homeDirectory = homeDirectory;

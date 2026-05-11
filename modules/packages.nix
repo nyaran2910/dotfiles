@@ -1,13 +1,12 @@
-{ pkgs2511, pkgsLatest, ... }:
+{ pkgs, ... }:
 
 {
-  home.packages = with pkgsLatest; [
+  home.packages = with pkgs; [
     tree
     ripgrep
     lazygit
     gh
-  ] ++ [
-    pkgs2511.neovim
-    pkgs2511.tmux
+    neovim
+    tmux
   ];
 }

@@ -5,7 +5,22 @@
 ### applying hosts
 
 ```
-sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- switch --flake ~/.dotfiles/#<host name> --impure
+sudo darwin-rebuild switch --flake ~/.dotfiles#<host name>
+```
+
+For the first bootstrap, use the pinned nix-darwin release:
+
+```
+sudo nix run github:nix-darwin/nix-darwin/nix-darwin-25.11#darwin-rebuild -- switch --flake ~/.dotfiles#<host name>
+```
+
+### local secrets
+
+`secrets/` is intentionally ignored. Git reads the local email from `secrets/gitconfig`:
+
+```
+[user]
+  email = you@example.com
 ```
 
 ## host name and devices
@@ -14,8 +29,12 @@ sudo nix run nix-darwin --extra-experimental-features "nix-command flakes" -- sw
 
 - Macbook Pro M4
 
-## problems
+### WSL fish login shell
 
-### about fish
+Home Manager does not change the system login shell with `sudo`. If WSL should log in with fish, run this manually after applying Home Manager:
 
-- it does not work for package-25.11, so that it use 25.05
+```
+fish_path="$HOME/.nix-profile/bin/fish"
+grep -qx "$fish_path" /etc/shells || printf '%s\n' "$fish_path" | sudo tee -a /etc/shells >/dev/null
+sudo chsh -s "$fish_path" "$USER"
+```

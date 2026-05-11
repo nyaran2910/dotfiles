@@ -1,10 +1,10 @@
-{ pkgs, pkgs2505, ... }:
+{ pkgs, ... }:
 {
   home.file.".hushlogin".text = "";
 
   programs.fish = {
     enable = true;
-    package = pkgs2505.fish;
+    package = pkgs.fish;
 
     plugins = [
       {
@@ -53,7 +53,20 @@
       cdd = "cd $HOME/Downloads/$argv[1]";
       cdw = "cd $HOME/Workspace/$argv[1]";
 
-      clone = "git clone --depth 1 $argv[1] $argv[2]; and rm -rf $argv[1]/.git";
+      clone = ''
+        if test -z "$argv[1]"
+          echo "usage: clone <repo> [dest]" >&2
+          return 1
+        end
+
+        set repo $argv[1]
+        set dest $argv[2]
+        if test -z "$dest"
+          set dest (basename "$repo" .git)
+        end
+
+        git clone --depth 1 "$repo" "$dest"; and rm -rf "$dest/.git"
+      '';
     };
   };
 }

@@ -1,52 +1,39 @@
 {
   hostname,
   homeDirectory,
+  system,
   username,
-  lib,
   pkgs,
-  pkgs2505,
   ...
 }:
 
 let
   nixStoreUuid = "DF0168D3-94D7-4D4E-A7B9-1E4AD817B986";
-  fishPath = "${pkgs2505.fish}/bin/fish";
   loginShellPath = "${homeDirectory}/.local/bin/fish-login";
-  ghosttyConfig = builtins.readFile ../../config/ghostty/config;
+  systemFishPath = "/nix/var/nix/profiles/system/sw/bin/fish";
+  loginShell = pkgs.writeText "fish-login" ''
+    #!/bin/sh
+    if [ ! -x '${systemFishPath}' ]; then
+      /usr/bin/security find-generic-password -s '${nixStoreUuid}' -w | /usr/sbin/diskutil apfs unlockVolume '${nixStoreUuid}' -stdinpassphrase >/dev/null 2>&1 || true
+      /usr/sbin/diskutil mount -mountPoint /nix '${nixStoreUuid}' >/dev/null 2>&1 || true
+    fi
+
+    if [ ! -x '${systemFishPath}' ]; then
+      exec /bin/zsh -l "$@"
+    fi
+
+    exec '${systemFishPath}' -l "$@"
+  '';
 in
 {
-  imports = builtins.map (f: ./. + "/${f}") (
-    builtins.filter (f: f != "default.nix" && builtins.match ".*\\.nix" f != null) (
-      builtins.attrNames (builtins.readDir ./.)
-    )
-  );
+  nixpkgs.hostPlatform = system;
 
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
   ];
 
-  environment.systemPackages = [
-    pkgs2505.fish
-  ];
-
-  environment.etc."shells".text = lib.mkForce ''
-    # List of acceptable shells for chpass(1).
-    # Ftpd will not allow users to connect who are not using
-    # one of these shells.
-
-    /bin/bash
-    /bin/csh
-    /bin/dash
-    /bin/ksh
-    /bin/sh
-    /bin/tcsh
-    /bin/zsh
-
-    # List of shells managed by nix.
-    ${fishPath}
-    ${loginShellPath}
-  '';
+  environment.shells = [ loginShellPath ];
 
   launchd.daemons.darwin-store.serviceConfig = {
     Label = "org.nixos.darwin-store";
@@ -59,7 +46,7 @@ in
       "/bin/sh"
       "-c"
       ''
-        if [ -d /nix/store ]; then
+        if /sbin/mount | /usr/bin/grep -q ' on /nix '; then
           exit 0
         fi
         /bin/mkdir -p /nix
@@ -74,23 +61,14 @@ in
 
   users.users.${username} = {
     home = homeDirectory;
+    shell = loginShellPath;
   };
 
   system.activationScripts.userShell.text = ''
     /bin/mkdir -p '${homeDirectory}/.local/bin'
-    /usr/bin/printf '%s\n' \
-      '#!/bin/sh' \
-      'if [ ! -x /nix/var/nix/profiles/system/sw/bin/fish ]; then' \
-      '  /usr/bin/security find-generic-password -s '${nixStoreUuid}' -w | /usr/sbin/diskutil apfs unlockVolume '${nixStoreUuid}' -stdinpassphrase >/dev/null 2>&1 || true' \
-      '  /usr/sbin/diskutil mount -mountPoint /nix '${nixStoreUuid}' >/dev/null 2>&1 || true' \
-      'fi' \
-      'exec /nix/var/nix/profiles/system/sw/bin/fish -l "$@"' \
-      > '${loginShellPath}'
+    /bin/cp '${loginShell}' '${loginShellPath}'
     /bin/chmod 0755 '${loginShellPath}'
-
-    if ! grep -qx '${loginShellPath}' /etc/shells 2>/dev/null; then
-      printf '%s\n' '${loginShellPath}' >> /etc/shells
-    fi
+    /usr/sbin/chown ${username}:staff '${homeDirectory}/.local' '${homeDirectory}/.local/bin' '${loginShellPath}'
 
     current_shell="$(dscl . -read /Users/${username} UserShell 2>/dev/null | cut -d' ' -f2-)"
     if [ "''${current_shell}" != '${loginShellPath}' ]; then
@@ -98,29 +76,25 @@ in
     fi
   '';
 
-  system.activationScripts.ghosttyConfig.text = ''
-    /bin/mkdir -p '${homeDirectory}/Library/Application Support/com.mitchellh.ghostty'
-    /usr/bin/printf '%s' ${lib.escapeShellArg ghosttyConfig} > '${homeDirectory}/Library/Application Support/com.mitchellh.ghostty/config'
-    /usr/sbin/chown ${username}:staff '${homeDirectory}/Library/Application Support/com.mitchellh.ghostty/config'
-    /bin/chmod 0644 '${homeDirectory}/Library/Application Support/com.mitchellh.ghostty/config'
-  '';
-
   programs.fish = {
     enable = true;
-    package = pkgs2505.fish;
+    package = pkgs.fish;
   };
 
   home-manager.users.${username} = {
+    home.file."Library/Application Support/com.mitchellh.ghostty/config".source =
+      ../../config/ghostty/config;
 
     home.sessionPath = [
       "/opt/homebrew/bin"
+      "/opt/homebrew/sbin"
     ];
 
     programs.fish.shellAliases = {
       cdi = "cd \"$HOME/Library/Mobile Documents/com~apple~CloudDocs/Personal/\"";
       rollback = "sudo -H darwin-rebuild --rollback";
       generation = "sudo -H darwin-rebuild --list-generations";
-      rebuild = "sudo -H nix run nix-darwin --extra-experimental-features \"nix-command flakes\" -- switch --flake ~/.dotfiles#orion --impure";
+      rebuild = "sudo -H darwin-rebuild switch --flake ~/.dotfiles#orion";
     };
 
   };

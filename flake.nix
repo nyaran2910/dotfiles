@@ -2,31 +2,65 @@
   description = "nyaran dotfiles managed with nix-darwin and home-manager";
 
   inputs = {
-    nixpkgs-2505.url = "github:NixOS/nixpkgs/nixos-25.05";
-    nixpkgs-2511.url = "github:NixOS/nixpkgs/nixos-25.11";
-    nixpkgs-latest.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nix-darwin.url = "github:LnL7/nix-darwin/nix-darwin-25.11";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs-2511";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager/release-25.11";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs-2511";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
-    inputs@{ nix-darwin
-    , home-manager
-    , ...
+    inputs@{
+      nix-darwin,
+      home-manager,
+      nixpkgs,
+      ...
     }:
     let
       username = "nyaran";
-      mkPkgs = system: nixpkgs: import nixpkgs { inherit system; };
-      mkSpecialArgs = { system, homeDirectory, hostname }:
-        let
-          pkgs2505 = mkPkgs system inputs.nixpkgs-2505;
-          pkgs2511 = mkPkgs system inputs.nixpkgs-2511;
-          pkgsLatest = mkPkgs system inputs.nixpkgs-latest;
-        in
+      mkPkgs = system: import nixpkgs { inherit system; };
+      mkSpecialArgs =
         {
-          inherit inputs system username homeDirectory hostname pkgs2505 pkgs2511 pkgsLatest;
+          system,
+          homeDirectory,
+          hostname,
+        }:
+        {
+          inherit
+            inputs
+            system
+            username
+            homeDirectory
+            hostname
+            ;
+        };
+      mkFormatter =
+        system:
+        let
+          pkgs = mkPkgs system;
+        in
+        pkgs.writeShellApplication {
+          name = "nixfmt-dotfiles";
+          runtimeInputs = [
+            pkgs.git
+            pkgs.nixfmt
+          ];
+          text = ''
+            if [ "$#" -eq 0 ]; then
+              files=()
+              while IFS= read -r -d "" file; do
+                files+=("$file")
+              done < <(git ls-files -z '*.nix')
+
+              if [ "''${#files[@]}" -eq 0 ]; then
+                exit 0
+              fi
+
+              set -- "''${files[@]}"
+            fi
+
+            exec nixfmt "$@"
+          '';
         };
 
       darwinSystem = "aarch64-darwin";
@@ -47,13 +81,11 @@
     in
     {
       darwinConfigurations.${darwinHostname} = nix-darwin.lib.darwinSystem {
-        system = darwinSystem;
         specialArgs = darwinSpecialArgs;
         modules = [
           ./hosts/orion/default.nix
           home-manager.darwinModules.home-manager
           {
-            nixpkgs.pkgs = darwinSpecialArgs.pkgs2511;
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "hm-backup";
@@ -68,7 +100,7 @@
       };
 
       homeConfigurations.${wslHostname} = home-manager.lib.homeManagerConfiguration {
-        pkgs = wslSpecialArgs.pkgs2511;
+        pkgs = mkPkgs wslSystem;
         extraSpecialArgs = wslSpecialArgs;
         modules = [
           ./modules/default.nix
@@ -76,7 +108,7 @@
         ];
       };
 
-      formatter.${darwinSystem} = darwinSpecialArgs.pkgsLatest.nixfmt-rfc-style;
-      formatter.${wslSystem} = wslSpecialArgs.pkgsLatest.nixfmt-rfc-style;
+      formatter.${darwinSystem} = mkFormatter darwinSystem;
+      formatter.${wslSystem} = mkFormatter wslSystem;
     };
 }
