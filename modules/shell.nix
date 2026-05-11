@@ -34,7 +34,6 @@
     shellAliases = {
       tsf = "tmux source-file ~/.config/tmux/tmux.conf";
       tsfc = "tmux source-file ~/.config/tmux/catppuccin-latte.conf";
-      tsfk = "tmux source-file ~/.config/tmux/kanagawa-wave.conf";
       tat = "tmux attach -t";
       tns = "tmux new -s";
       tl = "tmux ls";

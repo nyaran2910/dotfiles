@@ -12,6 +12,7 @@ let
   nixStoreUuid = "DF0168D3-94D7-4D4E-A7B9-1E4AD817B986";
   fishPath = "${pkgs2505.fish}/bin/fish";
   loginShellPath = "${homeDirectory}/.local/bin/fish-login";
+  ghosttyConfig = builtins.readFile ../../config/ghostty/config;
 in
 {
   imports = builtins.map (f: ./. + "/${f}") (
@@ -97,6 +98,13 @@ in
     fi
   '';
 
+  system.activationScripts.ghosttyConfig.text = ''
+    /bin/mkdir -p '${homeDirectory}/Library/Application Support/com.mitchellh.ghostty'
+    /usr/bin/printf '%s' ${lib.escapeShellArg ghosttyConfig} > '${homeDirectory}/Library/Application Support/com.mitchellh.ghostty/config'
+    /usr/sbin/chown ${username}:staff '${homeDirectory}/Library/Application Support/com.mitchellh.ghostty/config'
+    /bin/chmod 0644 '${homeDirectory}/Library/Application Support/com.mitchellh.ghostty/config'
+  '';
+
   programs.fish = {
     enable = true;
     package = pkgs2505.fish;
@@ -115,8 +123,6 @@ in
       rebuild = "sudo -H nix run nix-darwin --extra-experimental-features \"nix-command flakes\" -- switch --flake ~/.dotfiles#orion --impure";
     };
 
-    home.file."Library/Application Support/com.mitchellh.ghostty/config".source =
-      ../../config/ghostty/config;
   };
 
   system.primaryUser = username;
