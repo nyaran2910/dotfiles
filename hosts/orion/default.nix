@@ -81,23 +81,27 @@ in
     package = pkgs.fish;
   };
 
-  home-manager.users.${username} = {
-    home.file."Library/Application Support/com.mitchellh.ghostty/config".source =
-      ../../config/ghostty/config;
+  home-manager.users.${username} =
+    { lib, ... }:
+    {
+      home.activation.linkGhosttyConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        $DRY_RUN_CMD /bin/mkdir -p "${homeDirectory}/Library/Application Support/com.mitchellh.ghostty"
+        $DRY_RUN_CMD /bin/ln -sfn "${homeDirectory}/.dotfiles/config/ghostty/config" "${homeDirectory}/Library/Application Support/com.mitchellh.ghostty/config"
+      '';
 
-    home.sessionPath = [
-      "/opt/homebrew/bin"
-      "/opt/homebrew/sbin"
-    ];
+      home.sessionPath = [
+        "/opt/homebrew/bin"
+        "/opt/homebrew/sbin"
+      ];
 
-    programs.fish.shellAliases = {
-      cdi = "cd \"$HOME/Library/Mobile Documents/com~apple~CloudDocs/Personal/\"";
-      rollback = "sudo -H darwin-rebuild --rollback";
-      generation = "sudo -H darwin-rebuild --list-generations";
-      rebuild = "sudo -H darwin-rebuild switch --flake ~/.dotfiles#orion";
+      programs.fish.shellAliases = {
+        cdi = "cd \"$HOME/Library/Mobile Documents/com~apple~CloudDocs/Personal/\"";
+        rollback = "sudo -H darwin-rebuild --rollback";
+        generation = "sudo -H darwin-rebuild --list-generations";
+        rebuild = "sudo -H darwin-rebuild switch --flake path:${homeDirectory}/.dotfiles#orion";
+      };
+
     };
-
-  };
 
   system.primaryUser = username;
   system.stateVersion = 6;
