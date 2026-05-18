@@ -11,6 +11,7 @@ let
   nixStoreUuid = "DF0168D3-94D7-4D4E-A7B9-1E4AD817B986";
   loginShellPath = "${homeDirectory}/.local/bin/fish-login";
   systemFishPath = "/nix/var/nix/profiles/system/sw/bin/fish";
+  darwinRebuildPath = "/nix/var/nix/profiles/system/sw/bin/darwin-rebuild";
   loginShell = pkgs.writeText "fish-login" ''
     #!/bin/sh
     if [ ! -x '${systemFishPath}' ]; then
@@ -90,15 +91,19 @@ in
       '';
 
       home.sessionPath = [
+        "/nix/var/nix/profiles/system/sw/bin"
+        "/nix/var/nix/profiles/default/bin"
         "/opt/homebrew/bin"
         "/opt/homebrew/sbin"
       ];
 
       programs.fish.shellAliases = {
         cdi = "cd \"$HOME/Library/Mobile Documents/com~apple~CloudDocs/Personal/\"";
-        rollback = "sudo -H darwin-rebuild --rollback";
-        generation = "sudo -H darwin-rebuild --list-generations";
-        rebuild = "sudo -H darwin-rebuild switch --flake path:${homeDirectory}/.dotfiles#orion";
+        cdo = "cd '/Users/nyaran/Library/Mobile Documents/iCloud~md~obsidian/Documents/Personal'";
+        rollback = "sudo -H ${darwinRebuildPath} --rollback";
+        generation = "sudo -H ${darwinRebuildPath} --list-generations";
+        rebuild = "sudo -H ${darwinRebuildPath} switch --flake path:${homeDirectory}/.dotfiles#orion";
+        launch = "sudo launchctl print system/org.nixos.darwin-store >/dev/null 2>&1 || sudo launchctl bootstrap system /Library/LaunchDaemons/org.nixos.darwin-store.plist; sudo launchctl print system/org.nixos.nix-daemon >/dev/null 2>&1 || sudo launchctl bootstrap system /Library/LaunchDaemons/org.nixos.nix-daemon.plist; sudo launchctl kickstart -k system/org.nixos.darwin-store; sudo launchctl kickstart -k system/org.nixos.nix-daemon";
       };
 
     };

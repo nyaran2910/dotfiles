@@ -5,7 +5,7 @@
 ### applying hosts
 
 ```
-sudo darwin-rebuild switch --flake ~/.dotfiles#<host name>
+sudo /nix/var/nix/profiles/system/sw/bin/darwin-rebuild switch --flake ~/.dotfiles#<host name>
 ```
 
 For the first bootstrap, use the pinned nix-darwin release:

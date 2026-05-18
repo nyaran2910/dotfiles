@@ -1,6 +1,17 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
+let
+  pnpmHome = "${config.xdg.dataHome}/pnpm";
+in
 {
   home.file.".hushlogin".text = "";
+
+  home.sessionVariables = {
+    PNPM_HOME = pnpmHome;
+  };
+
+  home.sessionPath = [
+    "${pnpmHome}/bin"
+  ];
 
   programs.fish = {
     enable = true;
