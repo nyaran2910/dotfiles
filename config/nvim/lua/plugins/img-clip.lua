@@ -1,15 +1,23 @@
 return {
   "HakonHarnes/img-clip.nvim",
   event = "VeryLazy",
+  cmd = { "PasteImage", "ImgClipConfig", "ImgClipDebug" },
   opts = {
-    dir_path = "assets",
-    relative_to_current_file = true,
-    prompt_for_file_name = false,
-    file_name = "%Y-%m-%d-%H-%M-%S",
-    extension = "png",
+    default = {
+      dir_path = "assets",
+      relative_to_current_file = true,
+      prompt_for_file_name = false,
+      file_name = "%Y-%m-%d-%H-%M-%S",
+      extension = "png",
+      use_absolute_path = false,
+      relative_template_path = true,
+    },
   },
   keys = {
-    -- suggested keymap
-    { "<leader>p", "<cmd>PasteImage<cr>", desc = "Paste image from system clipboard" },
+    {
+      "<leader>p",
+      "<cmd>PasteImage<cr>",
+      desc = "Paste image from system clipboard",
+    },
   },
 }
