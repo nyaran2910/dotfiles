@@ -64,6 +64,38 @@ in
       cdd = "cd $HOME/Downloads/$argv[1]";
       cdw = "cd $HOME/Workspace/$argv[1]";
 
+      __tmux_attach_or_create = ''
+        if test (count $argv) -lt 1
+          echo "usage: __tmux_attach_or_create <session> [directory]" >&2
+          return 1
+        end
+
+        set session $argv[1]
+        set directory $argv[2]
+
+        if tmux has-session -t "$session" 2>/dev/null
+          if set -q TMUX
+            tmux switch-client -t "$session"
+          else
+            tmux attach-session -t "$session"
+          end
+          return $status
+        end
+
+        if test -n "$directory"
+          tmux new-session -s "$session" -c "$directory"
+        else
+          tmux new-session -s "$session"
+        end
+      '';
+
+      config = "__tmux_attach_or_create config $HOME/.dotfiles";
+      dev1 = "__tmux_attach_or_create dev1";
+      dev2 = "__tmux_attach_or_create dev2";
+      dev3 = "__tmux_attach_or_create dev3";
+      dev4 = "__tmux_attach_or_create dev4";
+      dev5 = "__tmux_attach_or_create dev5";
+
       clone = ''
         if test -z "$argv[1]"
           echo "usage: clone <repo> [dest]" >&2

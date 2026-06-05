@@ -98,8 +98,9 @@ in
       ];
 
       programs.fish.shellAliases = {
-        cdi = "cd \"$HOME/Library/Mobile Documents/com~apple~CloudDocs/Personal/\"";
-        cdo = "cd '/Users/nyaran/Library/Mobile Documents/iCloud~md~obsidian/Documents/Personal'";
+        cdi = "cd '/Users/nyaran/Library/Mobile\ Documents/com\~apple\~CloudDocs/Private'";
+        cdo = "cd '/Users/nyaran/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/Obsidian'";
+        no = "cd '/Users/nyaran/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/Obsidian' && nvim";
         rollback = "sudo -H ${darwinRebuildPath} --rollback";
         generation = "sudo -H ${darwinRebuildPath} --list-generations";
         rebuild = "sudo -H ${darwinRebuildPath} switch --flake path:${homeDirectory}/.dotfiles#orion";
