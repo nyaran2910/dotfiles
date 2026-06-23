@@ -15,3 +15,4 @@ keybind = cmd+enter=unbind
 
 # other
 confirm-close-surface = false
+macos-titlebar-style = tabs

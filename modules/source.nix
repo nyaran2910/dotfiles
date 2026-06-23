@@ -6,5 +6,4 @@
   xdg.configFile."nvim".source =
     config.lib.file.mkOutOfStoreSymlink "${homeDirectory}/.dotfiles/config/nvim";
   xdg.configFile."codex".source = ../config/codex;
-  home.file.".agents".source = ../config/agents;
 }

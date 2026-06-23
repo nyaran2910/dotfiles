@@ -1,17 +1,6 @@
-{ config, pkgs, ... }:
-let
-  pnpmHome = "${config.xdg.dataHome}/pnpm";
-in
+{ pkgs, ... }:
 {
   home.file.".hushlogin".text = "";
-
-  home.sessionVariables = {
-    PNPM_HOME = pnpmHome;
-  };
-
-  home.sessionPath = [
-    "${pnpmHome}/bin"
-  ];
 
   programs.fish = {
     enable = true;
@@ -50,13 +39,9 @@ in
       tl = "tmux ls";
       tkt = "tmux kill-session -t";
       tks = "tmux kill-server";
-
-      oc = "opencode";
-      npm = "pnpm";
+      co = "codex --yolo";
       fish = "exec fish";
-
       clone-report = "git clone --depth 1 https://github.com/nyaran2910/report report; and rm -rf report/.git";
-
       upgrade = "nix flake update --flake path:$HOME/.dotfiles";
     };
 
