@@ -41,6 +41,7 @@
       tks = "tmux kill-server";
       co = "codex --yolo";
       fish = "exec fish";
+      lg ="lazygit";
       clone-report = "git clone --depth 1 https://github.com/nyaran2910/report report; and rm -rf report/.git";
       upgrade = "nix flake update --flake path:$HOME/.dotfiles";
     };
@@ -75,6 +76,7 @@
       '';
 
       config = "__tmux_attach_or_create config $HOME/.dotfiles";
+      ob = "__tmux_attach_or_create obsidian '/Users/nyaran/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/life-os'";
       dev1 = "__tmux_attach_or_create dev1";
       dev2 = "__tmux_attach_or_create dev2";
       dev3 = "__tmux_attach_or_create dev3";

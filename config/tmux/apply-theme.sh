@@ -27,7 +27,7 @@ dark)
   set_color bg-bar "#1F1F28"
   set_color bg-pane "#1F1F28"
   set_color highlight "#7E9CD8"
-  set_color selection "#2A2A37"
+  set_color selection "#54546D"
   set_color info "#7AA89F"
   set_color accent "#7E9CD8"
   set_color notice "#FFA066"

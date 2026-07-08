@@ -11,6 +11,8 @@ command = /Users/nyaran/.local/bin/fish-login
 # global keybind
 keybind = global:shift+cmd+space=toggle_quick_terminal
 keybind = global:shift+cmd+alt+ctrl+g=new_window
+
+# local keybind
 keybind = cmd+enter=unbind
 
 # other
