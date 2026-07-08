@@ -1,4 +1,6 @@
 # font
+# b
+# instantly
 font-family = "JetBrains Mono","Hiragino Sans Mono"
 font-family-italic = "JetBrains Mono Italic"
 
@@ -8,11 +10,7 @@ theme = light:Catppuccin Latte,dark:Kanagawa Wave
 # shell
 command = /Users/nyaran/.local/bin/fish-login
 
-# global keybind
-keybind = global:shift+cmd+space=toggle_quick_terminal
-keybind = global:shift+cmd+alt+ctrl+g=new_window
-
-# local keybind
+# keybind
 keybind = cmd+enter=unbind
 
 # other

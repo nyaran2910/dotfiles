@@ -33,23 +33,21 @@
 
     shellAliases = {
       tsf = "tmux source-file ~/.config/tmux/tmux.conf";
-      tsfc = "tmux source-file ~/.config/tmux/catppuccin-latte.conf";
       tat = "tmux attach -t";
       tns = "tmux new -s";
       tl = "tmux ls";
       tkt = "tmux kill-session -t";
       tks = "tmux kill-server";
       co = "codex --yolo";
+      oc = "opencode";
+      cdd = "cd $HOME/Downloads/";
+      cdw = "cd $HOME/workspace/";
       fish = "exec fish";
       lg ="lazygit";
       clone-report = "git clone --depth 1 https://github.com/nyaran2910/report report; and rm -rf report/.git";
-      upgrade = "nix flake update --flake path:$HOME/.dotfiles";
     };
 
     functions = {
-      cdd = "cd $HOME/Downloads/$argv[1]";
-      cdw = "cd $HOME/Workspace/$argv[1]";
-
       __tmux_attach_or_create = ''
         if test (count $argv) -lt 1
           echo "usage: __tmux_attach_or_create <session> [directory]" >&2
@@ -75,8 +73,8 @@
         end
       '';
 
-      config = "__tmux_attach_or_create config $HOME/.dotfiles";
-      ob = "__tmux_attach_or_create obsidian '/Users/nyaran/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/life-os'";
+      con = "__tmux_attach_or_create config $HOME/.dotfiles";
+      li = "__tmux_attach_or_create life-os '/Users/nyaran/life-os'";
       dev1 = "__tmux_attach_or_create dev1";
       dev2 = "__tmux_attach_or_create dev2";
       dev3 = "__tmux_attach_or_create dev3";
