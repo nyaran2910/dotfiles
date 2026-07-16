@@ -98,13 +98,16 @@ in
       ];
 
       programs.fish.shellAliases = {
-        cdi = "cd '/Users/nyaran/Library/Mobile\ Documents/com\~apple\~CloudDocs/'";
-        cdl = "cd '/Users/nyaran/life-os/'";
+        cdl = "cd \"$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/life-os/\"";
         rollback = "sudo -H ${darwinRebuildPath} --rollback";
         generation = "sudo -H ${darwinRebuildPath} --list-generations";
         rebuild = "sudo -H ${darwinRebuildPath} switch --flake path:${homeDirectory}/.dotfiles#orion";
         launch = "sudo launchctl print system/org.nixos.darwin-store >/dev/null 2>&1 || sudo launchctl bootstrap system /Library/LaunchDaemons/org.nixos.darwin-store.plist; sudo launchctl print system/org.nixos.nix-daemon >/dev/null 2>&1 || sudo launchctl bootstrap system /Library/LaunchDaemons/org.nixos.nix-daemon.plist; sudo launchctl kickstart -k system/org.nixos.darwin-store; sudo launchctl kickstart -k system/org.nixos.nix-daemon";
         upgrade = "nix flake update --flake path:$HOME/.dotfiles";
+      };
+
+      programs.fish.functions = {
+        li = "__tmux_attach_or_create life-os \"$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/life-os/\"";
       };
 
     };

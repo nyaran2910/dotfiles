@@ -41,9 +41,9 @@
       co = "codex --yolo";
       oc = "opencode";
       cdd = "cd $HOME/Downloads/";
-      cdw = "cd $HOME/workspace/";
+      cdw = "cd $HOME/Workspace/";
       fish = "exec fish";
-      lg ="lazygit";
+      lg = "lazygit";
       clone-report = "git clone --depth 1 https://github.com/nyaran2910/report report; and rm -rf report/.git";
     };
 
@@ -74,7 +74,6 @@
       '';
 
       con = "__tmux_attach_or_create config $HOME/.dotfiles";
-      li = "__tmux_attach_or_create life-os '/Users/nyaran/life-os'";
       dev1 = "__tmux_attach_or_create dev1";
       dev2 = "__tmux_attach_or_create dev2";
       dev3 = "__tmux_attach_or_create dev3";
