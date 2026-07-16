@@ -3,7 +3,8 @@
   "permission": "allow",
   "keybinds": {
     "input_backspace": "ctrl+h",
-    "app_exit": "ctrl+q"
+    "input_submit": "ctrl+return",
+    "input_newline": "return",
   },
   "autoupdate": false
 }
