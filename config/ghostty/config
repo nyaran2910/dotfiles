@@ -1,7 +1,5 @@
 # font
-# b
-# instantly
-font-family = "JetBrains Mono","Hiragino Sans Mono"
+font-family = "JetBrains Mono"
 font-family-italic = "JetBrains Mono Italic"
 
 # theme
