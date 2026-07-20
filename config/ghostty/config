@@ -3,13 +3,14 @@ font-family = "JetBrains Mono"
 font-family-italic = "JetBrains Mono Italic"
 
 # theme
-theme = light:Catppuccin Latte,dark:Kanagawa Wave
+theme = Kanagawa Wave
 
 # shell
 command = /Users/nyaran/.local/bin/fish-login
 
 # keybind
 keybind = cmd+enter=unbind
+keybind = global:cmd+shift+space=toggle_quick_terminal
 
 # other
 confirm-close-surface = false
