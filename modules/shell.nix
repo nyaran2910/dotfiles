@@ -74,6 +74,7 @@
       '';
 
       con = "__tmux_attach_or_create config $HOME/.dotfiles";
+      zen = "__tmux_attach_or_create zen $HOME/Workspace/zenn";
       dev1 = "__tmux_attach_or_create dev1";
       dev2 = "__tmux_attach_or_create dev2";
       dev3 = "__tmux_attach_or_create dev3";

@@ -99,14 +99,23 @@ in
 
       programs.fish.shellAliases = {
         cdl = "cd \"$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/life-os/\"";
-        rollback = "sudo -H ${darwinRebuildPath} --rollback";
-        generation = "sudo -H ${darwinRebuildPath} --list-generations";
-        rebuild = "sudo -H ${darwinRebuildPath} switch --flake path:${homeDirectory}/.dotfiles#orion";
-        launch = "sudo launchctl print system/org.nixos.darwin-store >/dev/null 2>&1 || sudo launchctl bootstrap system /Library/LaunchDaemons/org.nixos.darwin-store.plist; sudo launchctl print system/org.nixos.nix-daemon >/dev/null 2>&1 || sudo launchctl bootstrap system /Library/LaunchDaemons/org.nixos.nix-daemon.plist; sudo launchctl kickstart -k system/org.nixos.darwin-store; sudo launchctl kickstart -k system/org.nixos.nix-daemon";
-        upgrade = "nix flake update --flake path:$HOME/.dotfiles";
+        rollback = "__launch_nix_daemons; and sudo -H ${darwinRebuildPath} --rollback";
+        generation = "__launch_nix_daemons; and sudo -H ${darwinRebuildPath} --list-generations";
+        rebuild = "__launch_nix_daemons; and sudo -H ${darwinRebuildPath} switch --flake path:${homeDirectory}/.dotfiles#orion";
+        upgrade = "__launch_nix_daemons; and nix flake update --flake path:$HOME/.dotfiles";
+        make-report-zip="cd ~/Downloads; and rm -rf report; and git clone --depth 1 https://github.com/nyaran2910/report report; and rm -rf report/.git; and zip -qr report.zip report; and rm -rf report";
       };
 
       programs.fish.functions = {
+        __launch_nix_daemons = ''
+          if not sudo launchctl print system/org.nixos.darwin-store >/dev/null 2>&1
+            sudo launchctl bootstrap system /Library/LaunchDaemons/org.nixos.darwin-store.plist; or return
+          end
+          if not sudo launchctl print system/org.nixos.nix-daemon >/dev/null 2>&1
+            sudo launchctl bootstrap system /Library/LaunchDaemons/org.nixos.nix-daemon.plist; or return
+          end
+          sudo launchctl kickstart -k system/org.nixos.darwin-store; and sudo launchctl kickstart -k system/org.nixos.nix-daemon
+        '';
         li = "__tmux_attach_or_create life-os \"$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/life-os/\"";
       };
 
